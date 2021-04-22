@@ -13,77 +13,15 @@
     <button onclick="testPost()">发送POST请求</button><br>
     <button onclick="testPut()">发送PUT请求</button><br>
     <button onclick="testDelete()">发送Delete请求</button><br>
-    <script>
-        /*
-        1.函数的返回值为promise, 成功的结果为response, 失败的结果为error
-        2.能处理多种类型的请求: GET/POST/PUT/DELETE
-        3.函数的参数为一个配置对象
-          {
-            url: '',   // 请求地址
-            method: '',   // 请求方式GET/POST/PUT/DELETE
-            params: {},  // GET/DELETE请求的query参数
-            data: {}, // POST或DELETE请求的请求体参数
-          }
-        4.响应json数据自动解析为js的对象/数组
-        */
 
-        function axios({
-            url,
-            method = 'GET',
-            params = {},
-            data = {}
-        }) {
-            return new Promise((resolve, reject) => {
-
-                let queryStr = '' // {a:1,b:2}
-                Object.keys(params).forEach(key => {
-                    queryStr += `${key}=${params[key]}&`
-                });
-                if (queryStr) {
-                    queryStr = queryStr.substring(0, queryStr.length - 1)
-                    url += '?' + queryStr
-                }
-
-
-
-                data = JSON.stringify(data)
-                method = method.toUpperCase()
-                const xhr = new XMLHttpRequest()
-
-                xhr.onreadystatechange = () => {
-                    const { readyState, status, statusText } = xhr
-                    if (readyState !== 4) return
-
-                    if (status >= 200 && status < 300) {
-                        const response = {
-                            data: JSON.parse(xhr.response),
-                            status,
-                            statusText
-                        }
-                        resolve(response)
-                    } else {
-                        reject(new Error('request error status is' + status))
-                    }
-                }
-                xhr.open(method, url, true)
-
-                if (method === 'POST' || method === 'PUT') {
-                    xhr.setRequestHeader('Content-Type', 'application/json;charset=utf-8')
-                    xhr.send(data)
-                } else if (method === 'GET' || method === 'DELETE') {
-                    xhr.send()
-                }
-
-            })
-        }
-    </script>
+    <script src="https://cdn.bootcdn.net/ajax/libs/axios/0.21.1/axios.js"></script>
     <script>
         function testGet() {
             axios({
                 url: 'http://localhost:3000/posts',
                 method: 'GET',
                 params: {
-                    id: 5
+                    id: 2
                 }
             }).then(
                 response => {
@@ -99,8 +37,8 @@
                 url: 'http://localhost:3000/posts',
                 method: 'POST',
                 data: {
-                    title: 'zzz',
-                    author: 'zzz'
+                    title: 'hlq',
+                    author: 'hlq'
                 }
             }).then(
                 response => {

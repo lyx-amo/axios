@@ -57,18 +57,13 @@
 
     </script>
     <script>
-        function getPosts() {
-            instance.get('/post').then(
-                result => {
-                    console.table(result.data);
-                })
+        async function getPosts() {
+            const result = await instance.get('/post')
+            console.table(result.data);
         }
         async function addPost() {
-            instance.post('/post',{title:'ly',author:'hlq'}).then(
-                result => {
-                    console.table(result.data)
-                }
-            )
+            const result = await instance.post('/post', { title: 'ly', author: 'hlq' })
+            console.table(result.data);
         }
     </script>
 </body>

@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+
+<body>
+    <script>
+
+
+
+        // 创建一个Axios构造函数,给这个构造函数的实例添加默认配置与构造器属性
+        function Axios(config) {
+            this.default = config
+            this.interceptors = {
+                request: {},
+                response: {}
+            }
+        }
+        //给构造函数添加发送请求的方法
+        Axios.prototype.request = function (config) {
+            console.log('发送ajax请求,请求的方法时' + config.method);
+        }
+
+        Axios.prototype.get = function (config) {
+            return this.request({ method: 'GET' }) //get和post之所以能发送请求是因为在get内部调用了request方法传入了配置对象下的method
+        }
+
+        Axios.prototype.post = function (config) {
+            return this.request({ method: 'POST' })
+        }
+
+        //创建构造函数createInstance axios是它的实例对象
+        function createInstance(config) {
+            //创建一个Axios的实例对象
+            let context = new Axios(config)//此时context上有了Axios上的default/interceptors属性,Axios的原型上有get等 context可以当对象点方法调用
+            //创建请求函数 
+            let instance = Axios.prototype.request.bind(context)//bind返回的是一个函数,但是instance上还没有 get等方法不能当对象使用
+            //把Axios原型上的方法复制给instance 这样 instance可以当对象使用,并把this指向为context
+            Object.keys(Axios.prototype).forEach((key) => {
+                instance[key] = Axios.prototype[key].bind(context)
+            })
+            //此时只复制了原型上的方法,还没复制构造函数内部的方法
+            Object.keys(context).forEach(key => {
+                instance[key] = context[key]
+            });
+            // 此时instance既可以当对象使用,也可以当函数使用
+
+            return instance   //在外部可以使用instance来发送请求
+        }
+
+        var axios = createInstance();
+
+        axios({ method: 'GET' })
+        axios({ method: 'POST' })
+        axios.get()
+        axios.post()
+
+    </script>
+</body>
+
+</html>

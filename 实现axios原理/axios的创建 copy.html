@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+
+<body>
+    <script>
+        function Axios(config) {
+            this.default = config,
+                this.intercepotors = {
+                    request: {},
+                    response: {}
+                }
+        }
+
+        Axios.prototype.request = function (config) {
+            console.log('发送ajax请求,请求的方法为' + config.method);
+        }
+        Axios.prototype.get = function (config) {
+            return this.request({ method: 'GET' })
+        }
+        Axios.prototype.post = function (config) {
+            return this.request({ method: 'POST' })
+        }
+
+        function createInstance(config) {
+
+            let context = new Axios(config);
+
+            let instance = Axios.prototype.request.bind(context)
+
+            Object.keys(Axios.prototype).forEach(key => {
+                instance[key] = Axios.prototype[key].bind(context)
+            })
+
+            Object.keys(context).forEach(key => {
+                instance[key] = context[key]
+            })
+            return instance
+        }
+
+        var axios = createInstance()
+
+        axios.get()
+        axios({method:'GET'})
+        axios({method:'POST'})
+    </script>
+</body>
+
+</html>
